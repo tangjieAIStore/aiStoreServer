@@ -8,7 +8,7 @@ config:
     client:
         clientId: aistore-ai
         clientSecret: aistoreabc123
-        url: http://39.106.250.146:48080/api/system/oauth2/check-token
+        url: http://127.0.0.1:48080/api/system/oauth2/check-token
 
 management:
     port: 8089
