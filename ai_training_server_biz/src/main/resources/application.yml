@@ -1,0 +1,4 @@
+######## Application Access Point ########
+spring:
+    profiles:
+        active: dev

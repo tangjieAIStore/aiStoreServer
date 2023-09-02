@@ -1,0 +1,49 @@
+######## Application Access Point ########
+server:
+    address: 0.0.0.0
+    port: 8088
+    servlet:
+        context-path: /api/aitraining
+config:
+    client:
+        clientId: aistore-ai
+        clientSecret: aistoreabc123
+        url: http://localhost:48080/api/system/oauth2/check-token
+
+management:
+    port: 8089
+    #contextPath: /manage
+
+spring:
+    jpa:
+        open-in-view: false
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+                show_sql: true
+                format_sql: true
+                use_sql_comments: true
+                jdbc:
+                    lob:
+                        non_contextual_creation: true
+
+logging:
+    level:
+        root: info
+#        org.springframework.security:
+#            - debug
+#            - info
+#        org.springframework.web: debug
+##        org.hibernate.SQL: trace
+#        org.hibernate.engine.QueryParameters: trace
+#        org.hibernate.engine.query.HQLQueryPlan: trace
+#        org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+
+######## Database Access Point ########
+# jdbc:mysql://rm-2ze4ap41c9chxr9nfoo.mysql.rds.aliyuncs.com:3306/aitraining
+spring.datasource:
+    url: jdbc:mysql://59.110.46.0:3306/aitraining
+    username: aidba
+    password: 51+0h%#$CYR3
+    driverClassName: com.mysql.cj.jdbc.Driver
