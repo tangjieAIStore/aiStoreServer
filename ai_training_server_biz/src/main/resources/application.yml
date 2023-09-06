@@ -1,4 +1,4 @@
 ######## Application Access Point ########
 spring:
     profiles:
-        active: test
+        active: dev

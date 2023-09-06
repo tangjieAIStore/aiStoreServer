@@ -2,6 +2,7 @@ package cn.aistore.token.service;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.http.HttpRequest;
 import cn.aistore.token.bean.CommonResult;
@@ -20,37 +21,43 @@ public class TokenCheckService {
     public TokenCheckService(TokenCheckProperties tokenCheckProperties) {
         this.tokenCheckProperties = tokenCheckProperties;
     }
+    //返回userid
+    public static Long authenticate(String url, String bearerToken) {
+        // 创建 HttpRequest 对象
+        HttpRequest request = HttpRequest.get(url);
 
-    public Map<String, String> buildBasicAuthorizationHeader() {
-        String authHeader = tokenCheckProperties.getClientId() + ":" + tokenCheckProperties.getClientSecret();
-        Map<String, String> map = Maps.newHashMap();
-        map.put(TokenCheckProperties.AuthHeader, TokenCheckProperties.AuthValPrefix + Base64.encode(authHeader));
-        return map;
+        // 添加 Authorization 头
+        request.header("Authorization", "Bearer " + bearerToken);
+
+        // 发送请求并获取 HttpResponse 对象
+        HttpResponse response = request.execute();
+
+        // 输出响应结果
+        if (response.isOk()) {
+            String responseBody = response.body();
+            System.out.println("请求成功，响应内容：" + responseBody);
+
+            // 解析 JSON 并获取 data 字段的值
+            JSONObject jsonObject = JSONUtil.parseObj(responseBody);
+            if (jsonObject.getBool("success", false)) {
+                return jsonObject.getLong("data");
+            } else {
+                System.out.println("请求成功，但 success 字段为 false");
+                return null;
+            }
+        } else {
+            System.out.println(url+",请求失败，状态码：" + response.getStatus());
+            return null;
+        }
+    }
+    public Long checkToken(String tenantId, String token) {
+        tenantId="0";
+        String url = tokenCheckProperties.getUrl();
+        Long userid = authenticate(url, token);
+        return userid;
     }
 
-    public CommonResult<OAuth2OpenCheckTokenRespVO> checkToken(String tenantId, String token) {
-
-        String url = tokenCheckProperties.getUrl()+"?token="+token;
-        Map<String, String> headerMap = buildBasicAuthorizationHeader();
-        headerMap.put(TokenCheckProperties.TenantHeader, tenantId);
-        HttpRequest httpRequest = HttpRequest.post(url).addHeaders(headerMap);
-        CommonResult result = CommonResult.<OAuth2OpenCheckTokenRespVO>builder().build();
-        try {
-            HttpResponse response = httpRequest.execute();
-            String responseS = response.body();
-            result = JSONUtil.toBean(responseS, result.getClass());
-            return result;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            result.setCode(500);
-            result.setMsg(e.getMessage());
-            return result;
-        }
-    }
-
-    public CommonResult<OAuth2OpenCheckTokenRespVO> checkTokenRight(String tenantId, String token) {
-        CommonResult<OAuth2OpenCheckTokenRespVO> result = checkToken(tenantId, token);
-        return result;
+    public Long checkTokenRight(String tenantId, String token) {
+       return checkToken(tenantId, token);
     }
 }

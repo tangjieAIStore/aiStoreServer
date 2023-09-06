@@ -7,8 +7,9 @@ server:
 config:
     client:
         clientId: aistore-ai
-        clientSecret: aistoreabc123
-        url: http://localhost:48080/api/system/oauth2/check-token
+        clientSecret: aistoreabc1233
+        url: http://tangjieai.com/api/user/authentication
+#        url: http://localhost:48080/api/user/authentication
 
 management:
     port: 8089
@@ -20,7 +21,7 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-                show_sql: true
+                show_sql: false
                 format_sql: true
                 use_sql_comments: true
                 jdbc:

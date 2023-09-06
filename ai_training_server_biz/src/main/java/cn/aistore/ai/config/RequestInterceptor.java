@@ -35,25 +35,21 @@ public class RequestInterceptor implements HandlerInterceptor {
         }
         // 在请求处理之前执行的代码
         String token = request.getHeader(TokenCheckProperties.AuthHeader);
-        String tenantId = request.getHeader(TokenCheckProperties.TenantHeader);
+        String tenantId ="0";// request.getHeader(TokenCheckProperties.TenantHeader);
         log.info("teantId: {}, token: {}", tenantId, token);
         if (!StringUtils.hasText(token) && !StringUtils.hasText(tenantId)) {
             throw new TokenException("请先登录");
         }
-        int index =  token.lastIndexOf(" ");
-        if (index == -1) {
-            return false;
-        }
-        token = token.substring(index+1);
+//        int index =  token.lastIndexOf(" ");
+//        if (index == -1) {
+//            return false;
+//        }
+//        token = token.substring(index+1);
         if (StringUtils.hasText(token) && StringUtils.hasText(tenantId)) {
 //            try {
-                CommonResult<OAuth2OpenCheckTokenRespVO> res = tokenCheckService.checkTokenRight(tenantId, token);
-                log.info("鉴权结果：{}", JSONUtil.toJsonStr(res));
-                if (res.isSuccess()) {
-                    SystemThreadLocal.setTenantId(Long.parseLong(tenantId));
-                    OAuth2OpenCheckTokenRespVO vo = JSONUtil.toBean(JSONUtil.toJsonStr(res.getData()), OAuth2OpenCheckTokenRespVO.class);
-
-                    SystemThreadLocal.setUserId(vo.getUserId().intValue());
+                Long userid = tokenCheckService.checkTokenRight(tenantId, token);
+                log.info(token+"鉴权结果user(如果是Null代表鉴权失败)：{}", userid);
+                if (StringUtils.hasText(token)) {
                     return true;
                 }
 //            }
