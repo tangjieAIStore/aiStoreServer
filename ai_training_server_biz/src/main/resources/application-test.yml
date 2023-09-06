@@ -8,7 +8,7 @@ config:
     client:
         clientId: aistore-ai
         clientSecret: aistoreabc123
-        url: http://127.0.0.1:48080/api/system/oauth2/check-token
+        url: http://tangjieai.com/api/user/authentication
 
 management:
     port: 8089
